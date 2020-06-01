@@ -1,0 +1,789 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" 
+ 	xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+    	xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+    	xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+	name="pompeyo">
+	<xacro:include filename="$(find pompeyo)/urdf/include/materials.urdf.xacro" />
+	
+    <xacro:arg name="camera_name"   default="zed" />
+    <xacro:arg name="camera_model"  default="zed" />
+    <xacro:arg name="base_frame"    default="base_link" />
+    <xacro:arg name="cam_pos_x"     default="0.0" />
+    <xacro:arg name="cam_pos_y"     default="0.0" />
+    <xacro:arg name="cam_pos_z"     default="0.0" />
+    <xacro:arg name="cam_roll"      default="0.0" />
+    <xacro:arg name="cam_pitch"     default="0.0" />
+    <xacro:arg name="cam_yaw"       default="0.0" />
+
+    <xacro:property name="M_PI"     value="3.1415926535897931" />
+    <xacro:property name="model"    value="$(arg camera_model)" />
+
+    <xacro:if value="${model == 'zed'}">
+        <xacro:property name="baseline" value="0.12" />
+    </xacro:if>
+    <xacro:if value="${model == 'zedm'}">
+        <xacro:property name="baseline" value="0.06" />
+    </xacro:if>
+    <xacro:if value="${model == 'zed2'}">
+        <xacro:property name="baseline" value="0.12" />
+    </xacro:if>
+
+
+	<link name="chasis">
+   		<visual>
+     			<geometry>
+       				<mesh filename="package://pompeyo/meshes/chasis.dae" scale="1 1 1"/>
+     			</geometry>
+				<origin rpy="0 0 1.578" xyz="0 0 0"/>
+			<material name="white">
+				<color rgba="1 1 1 0.5"/>
+			</material>
+   		</visual>
+		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/chasis.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="12.5502" />
+     		 		<origin xyz="0 0 1.578" rpy="0 0 0"/>
+     		 <inertia ixx="0.8959" iyy="0.626" izz="0.5261" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+   	 	
+ 	</link>
+/----------------------------INICIO LADO IZQUIERDA--------------------------------------
+	<link	name="pata1">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/Pata1.dae" scale="1 1 1"/>
+				</geometry>
+						<origin	rpy="0 0 0"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="1 1 1 1"	/>
+					</material>
+			</visual>
+		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/Pata1.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 0"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.7117" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-0.1142" iyy="-0.0153" izz="0.1018" ixy="0.0015" ixz="0.0016" iyx="0.0015" iyz="0.0240" izx="0.0016" izy="0.0240"/> 
+
+		</inertial>
+   	
+		</link>
+
+ 	<joint	name="baselink_to_pata1"	type="fixed">
+				<parent	link="pinon"	/>
+				<child	link="pata1"	/>
+				<origin	rpy="0 0 0"   xyz="0 0.275 0"	/>
+				<axis xyz="0 1 0"	/>
+
+				
+		</joint>
+
+	<link	name="pata3">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/Pata3.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0 0"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/Pata3.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 0"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.6352" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-0.0755" iyy="-0.0034" izz="0.0731" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata1_to_pata3"	type="continuous">
+				<parent	link="pata1"	/>
+				<child	link="pata3"	/>
+				<origin	rpy="0 0 0"   xyz="-0.385 0.015 -0.22257"	/>
+				<axis xyz="0 1 0"	/>
+		</joint>
+	<link	name="rueda1">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/rueda.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0 -1.578"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/rueda.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 -1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="193.2773" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-2.4647" iyy="1.2684" izz="1.2684" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata3_to_rueda1"	type="continuous">
+				<parent	link="pata3"	/>
+				<child	link="rueda1"	/>
+				<origin	rpy="0 0 0"   xyz="-0.385 0.035 -0.2225"	/>
+				<axis xyz="0 1 0"	/>
+		</joint>
+	<link	name="rueda2">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/rueda2.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0 1.578"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/rueda2.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="193.2773" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-2.4647" iyy="1.2684" izz="1.2684" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata3_to_rueda2"	type="continuous">
+				<parent	link="pata3"	/>
+				<child	link="rueda2"	/>
+				<origin	rpy="0 0 0"   xyz="0.385 0.035 -0.2225"	/>
+				<axis xyz="0 1 0"	/>
+		</joint>
+	<link	name="rueda3">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/rueda3.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0 1.578"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/rueda3.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="193.2773" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-2.4647" iyy="1.2684" izz="1.2684" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata1_to_rueda3"	type="continuous">
+				<parent	link="pata1"	/>
+				<child	link="rueda3"	/>
+				<origin	rpy="0 0 0"   xyz="0.628 0.035 -0.362"	/>
+				<axis xyz="0 1 0"	/>
+		</joint>
+/--------------------------INICIO LADO DERECHA------------------------
+	<link	name="pata2">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/Pata2.dae" scale="1 1 1"/>
+				</geometry>
+						<origin	rpy="0 0 0"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/Pata2.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 0"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.7117" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-0.1142" iyy="-0.0153" izz="0.1018" ixy="0.0015" ixz="0.0016" iyx="0.0015" iyz="0.0240" izx="0.0016" izy="0.0240" /> 
+		</inertial>
+   	
+		</link>
+
+ 	<joint	name="baselink_to_pata2"	type="fixed">
+				<parent	link="pinon2"	/>
+				<child	link="pata2"	/>
+				<origin	rpy="0 0 0"   xyz="0 -0.275 0"	/>
+				<axis xyz="0 1 0"	/>
+
+		</joint>
+	<link	name="pata4">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/Pata4.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0 0"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/Pata4.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 0"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.6352" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-0.0755" iyy="-0.0034" izz="0.0731" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata1_to_pata4"	type="continuous">
+				<parent	link="pata2"	/>
+				<child	link="pata4"	/>
+				<origin	rpy="0 0 0"   xyz="-0.385 -0.015 -0.22257"	/>
+				<axis xyz="0 1 0"	/>
+		</joint>
+<link	name="rueda4">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/rueda4.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0 -1.578"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/rueda4.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 -1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="193.2773" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-2.4647" iyy="1.2684" izz="1.2684" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata4_to_rueda4"	type="continuous">
+				<parent	link="pata4"	/>
+				<child	link="rueda4"	/>
+				<origin	rpy="0 0 0"   xyz="-0.385 -0.036 -0.2225"	/>
+				<axis xyz="0 1 0"	/>
+		</joint>
+	<link	name="rueda5">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/rueda5.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0  -1.578"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/rueda5.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 -1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="193.2773" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-2.4647" iyy="1.2684" izz="1.2684" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata4_to_rueda5"	type="continuous">
+				<parent	link="pata4"	/>
+				<child	link="rueda5"	/>
+				<origin	rpy="0 0 0"   xyz="0.385 -0.036 -0.2225"	/>
+				<axis xyz="0 1 0"	/>
+		</joint>
+<link	name="rueda6">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/rueda6.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0 -1.578"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/rueda6.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 -1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="193.2773" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="-2.4647" iyy="1.2684" izz="1.2684" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata2_to_rueda6"	type="continuous">
+				<parent	link="pata2"	/>
+				<child	link="rueda6"	/>
+				<origin	rpy="0 0 0"   xyz="0.628 -0.036 -0.362"	/>
+				<axis xyz="0 1 0"	/>
+		</joint>
+/------------------------INICIO BARRA DIFERENCIAL-------------------------------
+	<link	name="base_link">
+		 	<visual>
+				<geometry>
+					<box size="0.01 0.01 0.01"/>
+				</geometry>
+				<origin	rpy="0 0 0"	xyz="0 0 0"	/>
+					<material	name="blue">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+
+		</link>
+
+ 	<joint	name="chasis_base_link"	type="fixed">
+				<parent	link="base_link"	/>
+				<child	link="chasis"	/>
+				<origin	rpy="0 0 0"   xyz="0 0 0"	/>
+				<axis xyz="0 0 0"	/>
+		</joint>
+	<link	name="pinon">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/Pinon.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="1.12 0 -1.578"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/Pinon.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="1.12 0 -1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.0231" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="0" iyy="0" izz="0" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata1_to_pinon"	type="continuous">
+				<parent	link="base_link"	/>
+				<child	link="pinon"	/>
+				<origin	rpy="0 0 0"   xyz="0 0.035 0"	/>
+				<axis xyz="0 1 0"	/>
+				<mimic joint="baselink_to_pinon3" multiplier="1"/>
+		</joint>
+<link	name="pinon2">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/Pinon2.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="1.1 0 1.578"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/Pinon2.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="1.1 0 1.578"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.0231" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="0" iyy="0" izz="0" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="pata2_to_pinon2"	type="continuous">
+				<parent	link="base_link"	/>
+				<child	link="pinon2"	/>
+				<origin	rpy="0 0 0"   xyz="0 -0.035 0"	/>
+				<axis xyz="0 1 0"	/>
+				<mimic joint="baselink_to_pinon3" multiplier="-1"/>
+		</joint>
+<link	name="pinon3">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/Pinon3.dae" scale="1 1 1"/>
+				</geometry>
+				<origin	rpy="0 0 0"	xyz="0 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/Pinon3.dae" scale="1 1 1"/>
+			</geometry>
+      				<origin rpy="0 0 0"  xyz="0 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.0231" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="0" iyy="0" izz="0" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="baselink_to_pinon3"	type="continuous">
+				<parent	link="base_link"	/>
+				<child	link="pinon3"	/>
+				<origin	rpy="0 0 3.1416"   xyz="0.035 0 0"	/>
+				<axis xyz="1 0 0"	/>
+				
+				
+		</joint>
+	
+/---------------------PERCEPTION----------------------
+    <link name="zed_camera_center">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://pompeyo/urdf/models/zed.stl" />
+            </geometry>
+                <material name="zed_mat">
+        <color rgba="0.8 0.8 0.8 0.8"/>
+    </material>
+        </visual>
+    </link>
+
+    <joint name="zed_camera_center_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="zed_camera_center"/>
+        <origin xyz="0.2 0 0.16" rpy="0 0 0" />
+    </joint>
+
+
+
+
+    <joint name="zed_left_camera_joint" type="fixed">
+        <parent link="zed_camera_center"/>
+        <child link="zed_left_camera_frame"/>
+        <origin xyz="0 0.12 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="zed_left_camera_frame" />
+
+    <joint name="zed_left_camera_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-1.578 0.0 -1.578"/>
+        <parent link="zed_left_camera_frame"/>
+        <child link="zed_left_camera_optical_frame"/>
+    </joint>
+
+    <link name="zed_left_camera_optical_frame"/>
+
+
+
+    <joint name="zed_right_camera_joint" type="fixed">
+        <parent link="zed_camera_center"/>
+        <child link="zed_right_camera_frame"/>
+        <origin xyz="0 -0.12 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="zed_right_camera_frame" />
+
+    <joint name="zed_right_camera_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-1.578 0.0 -1.578"/>
+        <parent link="zed_right_camera_frame"/>
+        <child link="zed_right_camera_optical_frame"/>
+    </joint>
+
+    <link name="zed_right_camera_optical_frame"/>
+
+
+
+
+
+<link	name="base_imu_link">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/imu.dae" scale="2 2 2"/>
+				</geometry>
+				<origin	rpy="1.578 0 0"	xyz="0.06 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/imu.dae" scale="2 2 2"/>
+			</geometry>
+      				<origin rpy="1.578 0 0"  xyz="0.06 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.0001" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="0" iyy="0" izz="0" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="baselink_to_imu"	type="fixed">
+				<parent	link="chasis"	/>
+				<child	link="base_imu_link"	/>
+				<origin	rpy="0 0 0"   xyz="0 0 0.15"	/>
+				<axis xyz="1 0 0"	/>
+		</joint>
+
+<link	name="gps">
+		 	<visual>
+				<geometry>
+					<mesh filename="package://pompeyo/meshes/gps.dae" scale="10 10 10"/>
+				</geometry>
+				<origin	rpy="0 0 0"	xyz="-0.06 0 0"	/>
+					<material	name="white">
+						<color	rgba="0 0 0 1"	/>
+					</material>
+			</visual>
+   		<collision>
+			<geometry>
+       				<mesh filename="package://pompeyo/meshes/gps.dae" scale="10 10 10"/>
+			</geometry>
+      				<origin rpy="0 0 0"  xyz="-0.06 0 0"  />
+		</collision>
+		<inertial>
+    	  			<mass value="0.0001" />
+     		 		<origin xyz="0 0 0" rpy="0 0 0"/>
+     		 <inertia ixx="0" iyy="0" izz="0" ixy="0" ixz="0" iyz="0"/> 
+		</inertial>
+		</link>
+
+ 	<joint	name="baselink_to_gps"	type="fixed">
+				<parent	link="chasis"	/>
+				<child	link="gps"	/>
+				<origin	rpy="0 0 0"   xyz="0 0 0"	/>
+				<axis xyz="1 0 0"	/>
+		</joint>
+
+/---------------------GAZEBO------------------------
+<gazebo reference="chasis">
+	<selfCollide>true</selfCollide>
+
+    <material>Gazebo/RedTransparentOverlay</material>
+  </gazebo>
+
+<gazebo reference="base_link">
+	<static>true</static>
+    <material>Gazebo/RedTransparentOverlay</material>
+  </gazebo>
+
+ <gazebo reference="pata1">
+        <material>Gazebo/Gray</material>
+ </gazebo>
+
+ <gazebo reference="pata2">
+        <material>Gazebo/Gray</material>
+ </gazebo>
+
+ <gazebo reference="pata3">
+        <material>Gazebo/Gray</material>
+ </gazebo>
+
+ <gazebo reference="pata4">
+        <material>Gazebo/Gray</material>
+ </gazebo>
+
+ <gazebo reference="rueda1">
+	<mu1>0.1</mu1>
+    	<mu2>0.1</mu2>
+        <material>Gazebo/Black</material>
+ </gazebo>
+
+ <gazebo reference="rueda2">
+	<mu1>0.00000001</mu1>
+    	<mu2>0.00000001</mu2>
+        <material>Gazebo/Black</material>
+ </gazebo>
+
+ <gazebo reference="rueda3">
+	<mu1>0.1</mu1>
+    	<mu2>0.1</mu2>
+        <material>Gazebo/Black</material>
+ </gazebo>
+
+ <gazebo reference="rueda4">
+	<mu1>0.1</mu1>
+    	<mu2>0.1</mu2>
+        <material>Gazebo/Black</material>
+ </gazebo>
+
+ <gazebo reference="rueda5">
+	<mu1>0.00000001</mu1>
+    	<mu2>0.00000001</mu2>
+        <material>Gazebo/Black</material>
+ </gazebo>
+
+ <gazebo reference="rueda6">
+	<mu1>0.1</mu1>
+    	<mu2>0.1</mu2>
+        <material>Gazebo/Black</material>
+ </gazebo>
+
+ <gazebo reference="base_imu_link">
+        <material>Gazebo/Black</material>
+ </gazebo>
+
+ <gazebo reference="gps">
+        <material>Gazebo/Black</material>
+ </gazebo>
+
+
+ <gazebo reference="pinon">
+	<mu1>200</mu1>
+    	<mu2>200</mu2>
+	<collision name="pinon_collision">
+	      <surface>
+		<friction>
+		  <torsional>
+		    <coefficient>200</coefficient>
+		    <use_patch_radius>true</use_patch_radius>
+		    <patch_radius>0.05</patch_radius>
+		  </torsional>
+		</friction>
+	      </surface>
+	</collision>
+	<selfCollide>true</selfCollide>
+<minDepth>0.0001</minDepth>
+        <material>Gazebo/Black</material>
+ </gazebo>
+ <gazebo reference="pinon2">
+	<mu1>200</mu1>
+    	<mu2>200</mu2>
+	<collision name="pinon2_collision">
+	      <surface>
+		<friction>
+		  <torsional>
+		    <coefficient>200</coefficient>
+		    <use_patch_radius>true</use_patch_radius>
+		    <patch_radius>0.05</patch_radius>
+		  </torsional>
+		</friction>
+	      </surface>
+	</collision>
+	<selfCollide>true</selfCollide>
+<minDepth>0.0001</minDepth>
+    	<material>Gazebo/Black</material>
+ </gazebo>
+
+ <gazebo reference="pinon3">
+	<mu1>200</mu1>
+    	<mu2>200</mu2>
+	<collision name="pinon3_collision">
+	      <surface>
+		<friction>
+		  <torsional>
+		    <coefficient>200</coefficient>
+		    <use_patch_radius>true</use_patch_radius>
+		    <patch_radius>0.05</patch_radius>
+		  </torsional>
+		</friction>
+	      </surface>
+	</collision>
+	<selfCollide>true</selfCollide>
+	<minDepth>0.0001</minDepth>
+        <material>Gazebo/Black</material>
+ </gazebo>
+/---------------DRIVER--------------------------
+<transmission name="wheel_m1">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="pata3_to_rueda1">
+		<hardwareInterface>VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="motor1">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+
+<transmission name="wheel_m2">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="pata3_to_rueda2">
+		<hardwareInterface>VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="motor2">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+
+<transmission name="wheel_m3">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="pata1_to_rueda3">
+		<hardwareInterface>VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="motor3">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+
+<transmission name="wheel_m4">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="pata4_to_rueda4">
+		<hardwareInterface>VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="motor4">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+
+<transmission name="wheel_m5">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="pata4_to_rueda5">
+		<hardwareInterface>VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="motor5">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+
+<transmission name="wheel_m6">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="pata2_to_rueda6">
+		<hardwareInterface>VelocityJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="motor6">
+		<hardwareInterface>EffortJointInterface</hardwareInterface>
+		<mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+</transmission>
+
+<gazebo>
+  <plugin name="gazebo_ros_control" filename= "libgazebo_ros_control.so">
+   <robotNamespace>/</robotNamespace>
+  </plugin>
+</gazebo>
+</robot>
+

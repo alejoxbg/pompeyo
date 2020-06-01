@@ -1,0 +1,35 @@
+<launch>
+
+<arg name="model" default="$(find pompeyo)/urdf/pompeyo6.xacro"/>
+<arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz"/>
+<param name="robot_description" textfile="$(arg model)" />
+
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find pompeyo)/urdf/urdf.rviz -f base_link"/>
+
+<!-- Load joint controller configuration from YAML file to parameter server -->
+
+<rosparam file="$(find diff_drive)/config/joint_states.yaml" command="load"/>
+
+<rosparam file="$(find diff_drive)/config/diff_drive.yaml" command="load"/>
+
+<node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" ></node>
+
+<!-- load the controllers -->
+<node name="robot_arm_controller_spawner" pkg="controller_manager" type="spawner"
+  respawn="true" output="screen" 
+   args="/Diff_Drive/joint_state_controller
+         /Diff_Drive/diff_drive_controller
+        --shutdown-timeout 3"/>
+
+<!-- convert joint states to TF transforms for rviz, etc -->
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+<node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
+  <param name="default_topic" value="/Diff_Drive/diff_drive_controller/cmd_vel"/> 
+</node>
+
+</launch>
+
+ 
+
+
